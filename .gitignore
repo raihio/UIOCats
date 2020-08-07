@@ -3,3 +3,4 @@ FPIS.iml
 /out
 .DS_Store
 target
+project/target/
