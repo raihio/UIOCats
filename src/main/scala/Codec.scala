@@ -20,11 +20,7 @@ object Codec {
 
     implicit val doubleCoded: Codec[Double] = stringCodec.imap(_.toDouble, _.toString)
 
-    implicit def boxCodex[A]: Codec[Box[A]] = new Codec[Box[A]] {
-      override def encode(value: Box[A]): String =
-
-      override def decode(value: String): Box[A] =
-    }
+    implicit def boxCodex[A](implicit c: Codec[A]): Codec[Box[A]] = c.imap[Box[A]](Box(_), _.value)
   }
 }
 
