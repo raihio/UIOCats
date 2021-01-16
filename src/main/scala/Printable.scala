@@ -1,9 +1,18 @@
-import PrintableInstances.printableCat.format
+import Printable.format
 import cats.{Eq, Show}
 
 trait Printable[A] {
+  self =>
   def format(value: A): String
+
+  def contramap[B](func: B => A): Printable[B] =
+    new Printable[B] {
+      def format(value2: B): String = {
+        self.format(func(value2))
+      }
+    }
 }
+
 
 object Printable {
   def format[A](value: A)(implicit printer: Printable[A]): String = {
@@ -15,24 +24,8 @@ object Printable {
   }
 }
 
-object Main {
-  def main(args: Array[String]): Unit = {
-    val cat: Cat = Cat("Kitty", 2, "White")
-    import ShowInstances.catShow
-    import cats.implicits._
-    val a = cat.show
-    println(a)
-
-  }
-}
 
 object PrintableInstances {
-
-  implicit val printableString: Printable[String] = new Printable[String] {
-    override def format(value: String): String = {
-      value
-    }
-  }
 
   implicit val printableInt: Printable[Int] = new Printable[Int] {
     override def format(value: Int): String = {
@@ -45,7 +38,30 @@ object PrintableInstances {
       s"${value.name} is a ${value.age} year old ${value.colour} cat"
     }
   }
+
+  implicit val stringPrintable: Printable[String] = new Printable[String] {
+      def format(value: String): String = s"'${value}'"
+  }
+
+  implicit val booleanPrintable: Printable[Boolean] = new Printable[Boolean] {
+      def format(value: Boolean): String = if(value) "yes" else "no"
+  }
+
+  implicit def boxPrintable[A](implicit p: Printable[A]): Printable[Box[A]] = {
+    p.contramap[Box[A]](value => value.value)
+  }
 }
+
+object a {
+  def main(args: Array[String]): Unit = {
+    import PrintableInstances._
+    println(format(Box("Hello World!")))
+  }
+}
+
+
+final case class Cat(name: String, age: Int, colour: String)
+final case class Box[A](value: A)
 
 object PrintableSyntax {
   implicit class PrintableOps[A](value: A) {
@@ -91,7 +107,3 @@ object CatEquality {
 
 
 }
-
-
-
-final case class Cat(name: String, age: Int, colour: String)
