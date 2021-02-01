@@ -1,6 +1,15 @@
 import Printable.format
 import cats.{Eq, Show}
 
+def main(args: Array[String]): Unit = {
+
+  val func2 = (y: Double) => y * 2
+
+  type s[B, A] = A => B
+  val func2b: Double => Double = func2
+}
+
+
 trait Printable[A] {
   self =>
   def format(value: A): String
