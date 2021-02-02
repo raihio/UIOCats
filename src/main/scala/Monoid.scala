@@ -9,7 +9,7 @@ object Monoid {
     monoid
 }
 
-object Main {
+object Mainz {
   def main(args: Array[String]): Unit = {
     implicit def unionMonoid[A]: Monoid[Set[A]] = new Monoid[Set[A]] {
       override def empty: Set[A] = Set.empty
