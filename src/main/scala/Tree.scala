@@ -1,7 +1,9 @@
-import cats.Functor
+import cats.{Applicative, Functor, Monad}
 import cats.implicits.toFunctorOps
-import cats.Monad
+
 import scala.annotation.tailrec
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 sealed trait Tree[+A]
 
@@ -16,9 +18,8 @@ object treez {
   def leaf[A](value: A): Tree[A] = Leaf(value)
 
   def main(args: Array[String]): Unit = {
-    val intTree: Tree[Int] = Branch(Leaf(10), Leaf(20))
-    val a = intTree.map(_ * 2)
-    println(a)
+
+
   }
 
   implicit def treeFunctor: Functor[Tree] = new Functor[Tree] {
